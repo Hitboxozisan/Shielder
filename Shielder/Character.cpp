@@ -91,14 +91,13 @@ void Character::MoveFinish()
 	}
 }
 
-bool Character::IsCollidableState() const
+const bool Character::IsCollidableState() const
 {
-	/*if (state == NORMAL)
+	if (invincibleTime >= 1.5f)
 	{
 		return true;
 	}
 
-	return false;*/
 	return false;
 }
 

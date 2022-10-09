@@ -18,7 +18,7 @@ public:
 	{
 		NONE,		//存在しない
 		NORMAL,		//通常
-		ATTACK,
+		ATTACK,		//攻撃
 		SLIDE,		//跳ね返る
 		DAMAGE,		//被弾
 		DEAD		//死亡
@@ -33,14 +33,16 @@ public:
 	void OnHitOtherCharacter(const VECTOR& forceDirection);		//他のキャラクターと当たった
 	void OnHitShield(const VECTOR& adjust);				//盾とキャラクターが当たった
 
-	bool IsCollidableState() const;
+	//const bool IsCollidableState() const;
 
 private:
 	static const float COLLIDE_RADIUS;
 	static const float NORMAL_SPEED;
 	static const float DEFENSE_SPEED;
 
-	bool stopMove;
+	float stopTime;					//停止してからの経過時間
+	bool stopMove;					//停止しているか
+
 
 	void (Enemy::*pUpdate)();				//Update関数ポインタ
 

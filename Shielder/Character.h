@@ -38,11 +38,12 @@ public:
 	void MoveFinish();				//移動予定地に実際に移動する
 
 
-	const float& GetHitPoint() const { return hitPoint; }				//現在のhitPointを返す
+	const float& GetHitPoint() const { return hitPoint; }							//現在のhitPointを返す
 	const VECTOR& GetNextPosition() const  { return nextPosition; }					//移動予定位置を返す
 	const VECTOR GetCollisionShere() const { return collisionSphere.worldCenter; }	//当たり判定球を返す
 	const float GetCollisionRadius() const { return collisionSphere.radius; }		//当たり判定球の半径を返す
-	virtual bool IsCollidableState() const = 0;													//何かと接触できる状態か
+	const bool IsCollidableState() const;											//何かと接触できる状態か
+	const float GetInvicibleTime() const { return invincibleTime; }					//無敵時間の経過時間を返す
 
 	Shield* GetShieldPointer() const { return shield; }
 
@@ -63,6 +64,7 @@ protected:
 	VECTOR prevPosition;	// 前フレームのポジション
 	VECTOR prevDirection;	// 前フレームの向き
 	bool   noDrawFrame;		// 描画しないフレームか
+	float invincibleTime;	// 無敵時間
 
 	//CharacterState::State state;	
 

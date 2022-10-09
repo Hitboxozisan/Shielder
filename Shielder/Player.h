@@ -25,13 +25,18 @@ public:
 
 	void Draw();
 
+	void ReleaseInvincible();
+
 	void OnHitOtherCharacter(const VECTOR& forceDirection);
 	void OnHitShield(const VECTOR& adjust);				//盾とキャラクターが当たった
+
 	const bool IsDefense()const { return isDefense; }
-	bool IsCollidableState() const;
+	//const bool IsCollidableState() const;
 	const float GetTrunk() const { return trunkPoint; }
 
 	//デバッグ用
+	const float GetInvincibleTime() const { return invincibleTime; }
+
 private:
 	//Player();
 	Player(const Player&);			//コピーコンストラクタ
@@ -55,7 +60,7 @@ private:
 
 	float justDefenceTime;			//ジャストガードと判断する時間
 	float normalDefenceTime;		//ノーマルガードと判断する時間
-	float invincibleTime;			//無敵時間
+	
 
 	bool isDefense;
 

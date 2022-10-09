@@ -74,6 +74,8 @@ void Player::Initialize()
 
 	trunkPoint = TRUNK_POINT;
 
+	invincibleTime = 5.0f;
+
 	//位置を設定
 	MV1SetPosition(modelHandle, position);
 	MV1SetScale(modelHandle, VGet(0.5f, 0.5f, 0.5f));
@@ -92,6 +94,7 @@ void Player::Initialize()
 /// </summary>
 void Player::Update()
 {
+	invincibleTime += DeltaTime::GetInstace().GetDeltaTime();
 	if (pUpdate != nullptr)
 	{
 		(this->*pUpdate)();			//状態ごとの更新処理
@@ -118,13 +121,21 @@ void Player::Draw()
 	}
 
 	//デバッグ用
-	
+	DrawFormatString(50, 210, GetColor(255, 255, 255), "Invincible : %f", this->GetInvincibleTime());
 
 	//当たり判定デバック描画
 	DrawSphere3D(collisionSphere.worldCenter, collisionSphere.radius,
 		8, GetColor(0, 255, 0), 0, FALSE);
 
 
+}
+
+void Player::ReleaseInvincible()
+{
+	if (invincibleTime > INVINCIBLE_TIME)
+	{
+		noDrawFrame = false;
+	}
 }
 
 /// <summary>
@@ -135,6 +146,7 @@ void Player::OnHitOtherCharacter(const VECTOR& forceDirection)
 {
 	//前回のvelocityをリセットする
 	velocity = ZERO_VECTOR;
+	invincibleTime = 0.0f;					//無敵時間を初期化
 
 	VECTOR force = forceDirection;
 	force.y = HIT_OTHER_CHARACTER_DIRECTION_Y;
@@ -143,7 +155,6 @@ void Player::OnHitOtherCharacter(const VECTOR& forceDirection)
 	force.z = 0.0f;
 
 	velocity = VAdd(velocity, force);
-	invincibleTime = 0.0f;					//無敵時間を初期化
 	hitPoint -= DECREMENT_HIT_POINT;		//体力を減少させる
 	state = DAMAGE;
 	pUpdate = &Player::UpdateDamage;
@@ -157,10 +168,11 @@ void Player::OnHitShield(const VECTOR& adjust)
 {
 	//前回のvelocityをリセットする
 	velocity = ZERO_VECTOR;
-	
+	invincibleTime = 0.0f;			//無敵時間を発生させる
+
 	VECTOR force = adjust;
 	force.y = 0.0f;			//変な方向に動かないようにする
-	force.z = 0.0f;			//変な方向に動かないようにする
+	
 
 	//ガードしたタイミングによって後退させる量を変化させる
 	if (shield->GetDefenseCount() <= JUST_DEFENSE_TIME)
@@ -178,6 +190,8 @@ void Player::OnHitShield(const VECTOR& adjust)
 		trunkPoint -= DECREMENT_TRUNK_POINT;
 	}
 
+	force.z = 0.0f;			//変な方向に動かないようにする
+
 	velocity = VAdd(velocity, force);
 	state = SLIDE;
 	pUpdate = &Player::UpdateSlide;
@@ -187,17 +201,17 @@ void Player::OnHitShield(const VECTOR& adjust)
 /// 接触できる状態か
 /// </summary>
 /// <returns></returns>
-bool Player::IsCollidableState() const
-{
-	//接触できる状態なら
-	if (state == NORMAL ||
-		state == DEFENSE)
-	{
-		return true;
-	}
-
-	return false;
-}
+//const bool Player::IsCollidableState() const
+//{
+//	//接触できる状態なら
+//	if (state == NORMAL ||
+//		state == DEFENSE)
+//	{
+//		return true;
+//	}
+//
+//	return false;
+//}
 
 /// <summary>
 /// Normal状態の更新処理
@@ -286,8 +300,17 @@ void Player::Slide()
 {
 	//エフェクト生成
 
+	
 	//滑らせる
-	velocity.x += FRICTION_FORCE;
+	if (VSize(direction) >= 0.0f)
+	{
+		velocity.x += FRICTION_FORCE;
+	}
+	else
+	{
+		velocity.x -= FRICTION_FORCE;
+	}
+	
 
 	//止まったら通常状態に戻る
 	if (velocity.x >= 0.0f)
@@ -319,8 +342,8 @@ void Player::Damage()
 		nextPosition.y = 0.0f;
 		velocity = ZERO_VECTOR;
 		state = NORMAL;
-		pUpdate = &Player::UpdateNormal;
 		noDrawFrame = false;
+		pUpdate = &Player::UpdateNormal;
 	}
 }
 

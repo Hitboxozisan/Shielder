@@ -2,12 +2,14 @@
 #include "Enemy.h"
 
 #include "ModelManager.h"
+#include "DeltaTime.h"
 
 const float Enemy::COLLIDE_RADIUS = 50.0f;
 const float Enemy::NORMAL_SPEED = 3.0f;
 const float Enemy::DEFENSE_SPEED = 2.0f;
 
 Enemy::Enemy()
+	:stopTime()
 {
 
 }
@@ -62,10 +64,15 @@ void Enemy::Update()
 		}
 	}
 
+	stopTime += DeltaTime::GetInstace().GetDeltaTime();
+	if (stopTime > 1.5f)
+	{
+		stopMove = false;
+	}
 	if (!stopMove)
 	{
 		Move();
-
+		
 		InputAction();
 		MoveFinish();
 	}
@@ -83,6 +90,7 @@ void Enemy::Draw()
 
 void Enemy::OnHitOtherCharacter(const VECTOR& forceDirection)
 {
+	stopTime = 0.0f;
 	//移動を止める
 	stopMove = true;
 }
@@ -91,6 +99,8 @@ void Enemy::OnHitShield(const VECTOR& adjust)
 {
 	//前回のvelocityをリセットする
 	velocity = ZERO_VECTOR;
+	stopTime = 0.0f;
+	stopMove = true;
 
 	VECTOR force = adjust;
 	force.y = 0.0f;			//変な方向に動かないようにする
@@ -104,10 +114,10 @@ void Enemy::OnHitShield(const VECTOR& adjust)
 	//nextPosition = VAdd(nextPosition, adjust);
 }
 
-bool Enemy::IsCollidableState() const
-{
-	return false;
-}
+//const bool Enemy::IsCollidableState() const
+//{
+//	return false;
+//}
 
 void Enemy::Move()
 {
@@ -142,7 +152,7 @@ void Enemy::MoveFinish()
 
 void Enemy::UpdateFine()
 {
-
+	
 }
 
 void Enemy::UpdateCaution()
@@ -157,12 +167,13 @@ void Enemy::InputAction()
 {
 	inputDirection = ZERO_VECTOR;
 	inputDirection += vec * speed;
-	if ( position.x >= 620.0f)
+	
+	if ( position.x >= 2800.0f)
 	{
 		vec = LEFT;
 		position.x = 610.0f;
 	}
-	else if(position.x <= 0.0f)
+	else if(position.x <= 1300.0f)
 	{
 		vec = RIGHT;
 		position.x = 1.0f;
