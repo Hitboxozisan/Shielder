@@ -14,8 +14,9 @@ const float Player::DECREMENT_HIT_POINT = 5.0f;
 const float Player::COLLIDE_RADIUS = 50.0f;
 const float Player::NORMAL_SPEED = 3.0f;
 const float Player::DEFENSE_SPEED = 1.0f;
-const float Player::JUST_DEFENSE_TIME = 0.2f;
-const float Player::NORMAL_DEFENSE_TIME = 0.5f;
+const float Player::JUST_DEFENSE_TIME = 0.15f;
+const float Player::NORMAL_DEFENSE_TIME = 0.16f;
+const float Player::STOP_VELOCITY = 0.5f;
 const float Player::HIT_OTHER_CHARACTER_DIRECTION_Y = 1.5f;
 const float Player::GRAVITY = 1.0f;
 const float Player::FRICTION_FORCE = 0.1f;
@@ -27,6 +28,11 @@ const float Player::INVINCIBLE_TIME = 5.0f;
 /// コンストラクタ
 /// </summary>
 Player::Player()
+	:state()
+	,justDefenceTime()
+	,normalDefenceTime()
+	,isDefense()
+	,pUpdate(nullptr)
 {
 }
 
@@ -302,7 +308,7 @@ void Player::Slide()
 
 	
 	//滑らせる
-	if (VSize(direction) >= 0.0f)
+	if (velocity.x <= 0.0f)
 	{
 		velocity.x += FRICTION_FORCE;
 	}
@@ -313,7 +319,7 @@ void Player::Slide()
 	
 
 	//止まったら通常状態に戻る
-	if (velocity.x >= 0.0f)
+	if (VSquareSize(velocity) <= STOP_VELOCITY)
 	{
 		velocity = ZERO_VECTOR;
 		state = NORMAL;
@@ -351,11 +357,11 @@ void Player::InputAction()
 {
 	inputDirection = ZERO_VECTOR;
 	//左右移動
-	if (KeyManager::GetInstance().CheckPressed(KEY_INPUT_A))
+	if (KeyManager::GetInstance().CheckPressed(KEY_INPUT_A) && nextPosition.x >= SCREEN_LEFTMOST)
 	{
 		inputDirection += LEFT * speed;
 	}
-	if (KeyManager::GetInstance().CheckPressed(KEY_INPUT_D))
+	if (KeyManager::GetInstance().CheckPressed(KEY_INPUT_D) && nextPosition.x <= SCREEN_RIGHTMOST)
 	{
 		inputDirection += RIGHT * speed;
 	}

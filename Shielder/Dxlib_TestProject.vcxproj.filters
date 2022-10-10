@@ -95,6 +95,9 @@
     <ClCompile Include="EffectManager.cpp">
       <Filter>ソース ファイル\Effect</Filter>
     </ClCompile>
+    <ClCompile Include="Bullet.cpp">
+      <Filter>ソース ファイル\Mover</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Character.h">
@@ -162,6 +165,9 @@
     </ClInclude>
     <ClInclude Include="EffectManager.h">
       <Filter>ソース ファイル\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Bullet.h">
+      <Filter>ソース ファイル\Mover</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -14,6 +14,7 @@ public:
 		PLAYER,
 		ENEMY,
 		SHIELD,
+		BULLET,
 
 		MODEL_AMOUNT
 	};

@@ -76,6 +76,7 @@ private:
 	static const float NORMAL_SPEED;
 	static const float DEFENSE_SPEED;*/
 	
+	
 
 	virtual void InputAction() = 0;
 };

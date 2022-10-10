@@ -50,6 +50,7 @@ private:
 	static const float HIT_OTHER_CHARACTER_DIRECTION_Y;		//敵キャラと当たった時のY方向の向き
 	static const float JUST_DEFENSE_TIME;					//ジャストガードと判断する時間
 	static const float NORMAL_DEFENSE_TIME;					//ノーマルガードと判断する時間
+	static const float STOP_VELOCITY;						//止まったと判断する速度
 	static const float GRAVITY;								//重力
 	static const float FRICTION_FORCE;						//摩擦力
 	static const float TRUNK_POINT;							//体幹ゲージ
@@ -65,6 +66,8 @@ private:
 	bool isDefense;
 
 	void (Player::* pUpdate)();		//Update関数ポインタ
+
+
 
 	//各状態の更新処理
 	void UpdateNormal();
