@@ -1,4 +1,6 @@
 #include "Pch.h"
+#include <chrono>
+#include <thread>
 #include <random>
 #include "Enemy.h"
 
@@ -16,7 +18,8 @@ const float Enemy::TRUNK_POINT = 100.0f;
 const float Enemy::DECREMENT_TRUNK_POINT = 10.0f;
 
 Enemy::Enemy()
-	:movedDistance(0.0f)
+	:assaultCount(0)
+	,movedDistance(0.0f)
 	,stopTime(0.0f)
 	,stopMove()
 	,currentRightPosition()
@@ -176,52 +179,41 @@ void Enemy::MoveFinish()
 /// </summary>
 void Enemy::Assault()
 {
-
+	
 	VECTOR force = VGet(1.0f, 0.0f, 0.0f);			//移動量を設定
 	force.y = 0.0f;			//変な方向に動かないようにする
 	force.z = 0.0f;			//変な方向に動かないようにする
-	
+
 	//エネミーの現在地が右端寄りなら
 	if (currentRightPosition)
 	{
-		force = VScale(force, 0.5f);
-
-		//左端に近くなったら
-		//if (position.x - SCREEN_LEFTMOST <= 150.0f)
-		//{
-		//	//画面端に戻る
-		//	attackType = BACK;
-
-		//}
+		force = VScale(force, 0.5f);		//左側に力を与える
 	}
 	else
 	{
-		force = VScale(force, -0.5f);
-
-		//右端が近くなったら
-		//if (SCREEN_RIGHTMOST - position.x <= 150.0f)
-		//{
-		//	//画面端に戻る
-		//	attackType = BACK;
-
-		//}
+		force = VScale(force, -0.5f);		//右側に力を与える
 	}
 	
-	velocity = VAdd(velocity, force);
-
 	//突進させる
 	if (movedDistance <= 300.0f && movedDistance >= -300.0f)
 	{
 		stopTime = 0.0f;
+		velocity = VAdd(velocity, force);
 		nextPosition = VAdd(nextPosition, velocity);
 	}
 	
-
 	//停止時間を超えたら突進再開
-	if (stopTime >= 3.0f)
+	if (stopTime >= 1.0f)
 	{
+		++assaultCount;
 		movedDistance = 0.0f;
 		force = VGet(1.0f, 0.0f, 0.0f);
+	}
+
+	//3回突進したら次の行動に移る
+	if (assaultCount >= 3.0f)
+	{
+		attackType = JUDGE;
 	}
 
 	stopTime += DeltaTime::GetInstace().GetDeltaTime();
@@ -241,16 +233,19 @@ void Enemy::Back()
 	//画面端まで移動
 	if (position.x >= SCREEN_LEFTMOST && position.x <= SCREEN_RIGHTMOST)
 	{
-		nextPosition = VAdd(nextPosition, returnForce);
 	}
 	else
 	{
 		returnForce.x = 0.0f;		//横移動を停止させる
 	}
 
+	nextPosition = VAdd(nextPosition, returnForce);			//画面端まで移動
+
 	//地面に着地したら落下を止める
 	if (nextPosition.y <= 0.0f)
 	{
+		velocity = ZERO_VECTOR;
+		assaultCount = 0.0f;		//突進回数をリセット
 		returnForce = ZERO_VECTOR;
 		position.y = 0.0f;
 		nextPosition.y = 0.0f;

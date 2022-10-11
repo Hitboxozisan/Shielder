@@ -60,6 +60,7 @@ private:
 	static const float TRUNK_POINT;							//体幹ゲージ
 	static const float DECREMENT_TRUNK_POINT;				//体幹ゲージ減少量
 
+	int assaultCount;
 	float movedDistance;			//移動を始めてからの移動量
 	float stopTime;					//停止してからの経過時間
 	bool stopMove;					//停止しているか
