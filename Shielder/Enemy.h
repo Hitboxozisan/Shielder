@@ -74,6 +74,7 @@ private:
 	EnemyState physical;
 	State state;
 	AttackType attackType;					//敵の行動パターン
+
 	
 	void UpdateFine();
 	void UpdateCaution();
@@ -86,6 +87,7 @@ private:
 	void Move();
 	void MoveFinish();
 	void Assault();				//突進攻撃
+	void Bullet();				//弾発射
 	void Back();				//画面端に戻る
 	void Slide();
 

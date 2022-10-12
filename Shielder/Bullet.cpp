@@ -45,7 +45,7 @@ void Bullet::Activate(const VECTOR& inPosition, const VECTOR& inDirection)
 	direction = inDirection;
 	velocity = ZERO_VECTOR;
 
-	state = FLYING;
+	state;
 
 	SetToFrontOfEnemy(inPosition, inDirection);		//エネミーの前方に位置調整
 
@@ -68,7 +68,8 @@ bool Bullet::Update()
 	speed = SPEED;
 
 	//飛んでいるときの処理
-	if (state == FLYING)
+	if (state == NORMAL ||
+		state == SLOW)
 	{
 		Move();
 	}
@@ -107,7 +108,8 @@ Bullet::State Bullet::GetState() const
 
 bool Bullet::IsCollidableState() const
 {
-	if (state == FLYING)
+	if (state == NORMAL ||
+		state == SLOW)
 	{
 		return true;
 	}

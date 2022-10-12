@@ -5,6 +5,7 @@
 using namespace My3dLib;
 
 class Shield;
+class Bullet;
 
 //状態
 //namespace CharacterState
@@ -69,6 +70,7 @@ protected:
 	//CharacterState::State state;	
 
 	Shield* shield;			//盾のインスタンス
+	Bullet* bullet;			//弾のインスタンス
 	Sphere collisionSphere;	//当たり判定球
 private:
 	//定数

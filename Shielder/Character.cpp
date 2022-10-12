@@ -3,6 +3,7 @@
 #include "Character.h"
 #include "ModelManager.h"
 #include "Shield.h"
+#include "Bullet.h"
 
 using namespace My3dLib;
 

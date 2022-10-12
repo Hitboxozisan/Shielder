@@ -5,8 +5,9 @@ class Bullet final : public Mover
 public:
 	enum State
 	{
-		NONE,
-		FLYING,
+		NONE,			//存在しない
+		NORMAL,			//飛んでいる（通常）
+		SLOW			//飛んでいる（ゆっくり）
 	};
 
 	Bullet();
@@ -34,6 +35,8 @@ private:
 	State state;		//現在の状態
 	VECTOR velocity;	//現在の速度、加速度、向きを持つ、マイナスにもなる
 	float speed;		//現在の速度
+
+	My3dLib::Sphere collisionSphere;			//当たり判定用球
 
 	void Move();		//移動処理
 };

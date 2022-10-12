@@ -1,0 +1,4 @@
+﻿  Enemy.cpp
+C:\Users\gaiya\Desktop\Shielder\Enemy.cpp(248,18): warning C4244: '=': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\gaiya\Desktop\Shielder\Enemy.cpp(283,8): warning C4101: 'sub': ローカル変数は 1 度も使われていません。
+  Dxlib_TestProject.vcxproj -> C:\Users\gaiya\Desktop\Shielder\x64\Debug\Dxlib_TestProject.exe

@@ -98,6 +98,9 @@
     <ClCompile Include="Bullet.cpp">
       <Filter>ソース ファイル\Mover</Filter>
     </ClCompile>
+    <ClCompile Include="BulletCreater.cpp">
+      <Filter>ソース ファイル\Character</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Character.h">
@@ -168,6 +171,9 @@
     </ClInclude>
     <ClInclude Include="Bullet.h">
       <Filter>ソース ファイル\Mover</Filter>
+    </ClInclude>
+    <ClInclude Include="BulletCreater.h">
+      <Filter>ソース ファイル\Character</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

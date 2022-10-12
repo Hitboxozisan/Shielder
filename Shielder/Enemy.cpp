@@ -203,7 +203,7 @@ void Enemy::Assault()
 	}
 	
 	//’â~ŠÔ‚ğ’´‚¦‚½‚ç“ËiÄŠJ
-	if (stopTime >= 1.0f)
+	if (stopTime >= 0.5f)
 	{
 		++assaultCount;
 		movedDistance = 0.0f;
@@ -218,6 +218,11 @@ void Enemy::Assault()
 
 	stopTime += DeltaTime::GetInstace().GetDeltaTime();
 	movedDistance += velocity.x;			//i‚ñ‚¾‹——£‚ğ‰ÁZ
+}
+
+void Enemy::Bullet()
+{
+	
 }
 
 void Enemy::Back()
