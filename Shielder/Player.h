@@ -44,7 +44,7 @@ private:
 
 	static const float HIT_POINT;							//‘Ì—Í
 	static const float DECREMENT_HIT_POINT;					//‘Ì—Í‚ÌŒ¸­—Ê
-	static const float COLLIDE_RADIUS;
+	static const float COLLIDE_RADIUS;						//“–‚½‚è”»’è‹…”¼Œa
 	static const float NORMAL_SPEED;
 	static const float DEFENSE_SPEED;
 	static const float HIT_OTHER_CHARACTER_DIRECTION_Y;		//“GƒLƒƒƒ‰‚Æ“–‚½‚Á‚½‚ÌY•ûŒü‚ÌŒü‚«

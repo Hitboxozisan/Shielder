@@ -4,6 +4,7 @@
 #include "ModelManager.h"
 #include "Shield.h"
 #include "Bullet.h"
+#include "BulletCreater.h"
 
 using namespace My3dLib;
 
@@ -17,6 +18,7 @@ Character::Character()
 	,nextDirction()
 	,prevPosition()
 	,noDrawFrame()
+	,bulletCreater()
 {
 }
 

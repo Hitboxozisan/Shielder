@@ -1,10 +1,11 @@
 #include "Pch.h"
-#include <list>
+
+#include "Bullet.h"
 #include "BulletCreater.h"
 
-BulletCreater::BulletCreater()
-	:activeBullet()
-	,deActiveBullet()
+BulletCreater::BulletCreater(std::list<Bullet*>* const activeList, std::list<Bullet*>* const deactiveList)
+	:activeBullet(activeList)
+	,deActiveBullet(deactiveList)
 {
 }
 
@@ -19,10 +20,20 @@ Bullet* BulletCreater::Create(const VECTOR& inPosition, const VECTOR& inDirectio
 
 	}
 
-	return nullptr;
+	activeBullet->push_back(deActiveBullet->front());
+	deActiveBullet->pop_front();
+	activeBullet->back()->Activate(inPosition, inDirection);
+
+	return activeBullet->back();
 }
 
 bool BulletCreater::isCreatableCheck()
 {
+	//‹ó‚«‚ª‚ ‚é
+	if (deActiveBullet->empty() == false)
+	{
+		return true;
+	}
+
 	return false;
 }

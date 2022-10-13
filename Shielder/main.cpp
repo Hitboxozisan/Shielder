@@ -4,7 +4,10 @@
 #include "Enemy.h"
 #include "Character.h"
 #include "Shield.h"
+#include "Bullet.h"
 #include "Camera.h"
+#include "Bullet.h"
+#include "BulletCreater.h"
 #include "ModelManager.h"
 #include "KeyManager.h"
 #include "HitChecker.h"
@@ -30,6 +33,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	ModelManager::GetInstance();
 	Character** character = new Character * [1]();
+	//BulletCreater* bulletCreater = new BulletCreater();
 	character[0] = new Player;
 	character[0]->Initialize();
 	character[1] = new Enemy;

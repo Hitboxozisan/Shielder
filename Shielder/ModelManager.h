@@ -36,6 +36,7 @@ private:
 	static const string PLAYER_PATH;
 	static const string ENEMY_PATH;
 	static const string SHIELD_PATH;
+	static const string BULLET_PATH;
 
 	int modelHandle[MODEL_AMOUNT];
 };

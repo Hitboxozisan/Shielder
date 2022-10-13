@@ -4,6 +4,7 @@ class Character;
 class Player;
 class Enemy;
 class Shield;
+class Bullet;
 
 class HitChecker final
 {

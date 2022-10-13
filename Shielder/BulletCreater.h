@@ -2,10 +2,13 @@
 
 class Bullet;
 
+#include <list>
+
 class BulletCreater
 {
 public:
-	BulletCreater();
+	BulletCreater(std::list<Bullet*>* const activeList,
+				  std::list<Bullet*>* const deactiveList );
 	~BulletCreater();
 
 	Bullet* Create(const VECTOR& inPosition, const VECTOR& inDirection);

@@ -4,6 +4,9 @@
 #include <random>
 #include "Enemy.h"
 
+#include "Bullet.h"
+#include "BulletCreater.h"
+
 #include "ModelManager.h"
 #include "DeltaTime.h"
 
@@ -44,6 +47,8 @@ void Enemy::Initialize()
 	nextPosition = position;
 	direction = ZERO_VECTOR;
 	nextDirction = direction;
+
+	//direction = VGet(1.0f, 0.0f, 0.0f);
 
 	state = NORMAL;
 	attackType = JUDGE;
@@ -136,6 +141,7 @@ void Enemy::OnHitShield(const VECTOR& adjust)
 	state = SLIDE;
 	pUpdate = &Enemy::UpdateSlide;
 	
+	bullet = nullptr;
 }
 
 //const bool Enemy::IsCollidableState() const
@@ -220,11 +226,16 @@ void Enemy::Assault()
 	movedDistance += velocity.x;			//i‚ñ‚¾‹——£‚ğ‰ÁZ
 }
 
+
 void Enemy::Bullet()
 {
-	
+	CreateBullet();
+	ShootBullet();			//’e‚ğ”­Ë
 }
 
+/// <summary>
+/// ‰ŠúˆÊ’u‚É–ß‚é
+/// </summary>
 void Enemy::Back()
 {
 	//—”—p•Ï”
@@ -255,10 +266,13 @@ void Enemy::Back()
 		position.y = 0.0f;
 		nextPosition.y = 0.0f;
 		int nextAttack = next(eng);	//Ÿ‚Ìs“®‚ğw’è(–¢À‘•)
-		attackType = ASSAULT;		//Ÿ‚Ìó‘Ô‚ÉˆÚs‚·‚é
+		attackType = BULLET;		//Ÿ‚Ìó‘Ô‚ÉˆÚs‚·‚é
 	}
 }
 
+/// <summary>
+/// ÚGŒã‚Ì”½“®
+/// </summary>
 void Enemy::Slide()
 {
 	//ŠŠ‚ç‚¹‚é
@@ -281,6 +295,34 @@ void Enemy::Slide()
 	}
 
 	nextPosition = VAdd(nextPosition, velocity);
+}
+
+/// <summary>
+/// ’e‚ğ¶¬
+/// </summary>
+void Enemy::CreateBullet()
+{
+	if (bulletCreater->isCreatableCheck() == true)
+	{
+		bullet = bulletCreater->Create(position, direction);		//’e‚ğ¶¬
+		printfDx("create");
+	}
+}
+
+/// <summary>
+/// ’e‚ğ”­Ë
+/// </summary>
+void Enemy::ShootBullet()
+{
+	//’e‚ğ•Û‚µ‚Ä‚¢‚È‚¢‚È‚çˆ—‚µ‚È‚¢
+	if (bullet == nullptr)
+	{
+		return;
+	}
+
+	bullet->Shoot(static_cast<int>(attackType));
+
+	bullet = nullptr;
 }
 
 void Enemy::CurrentPositionJudge()
@@ -359,6 +401,7 @@ void Enemy::UpdateAttack()
 		Assault();
 		break;
 	case BULLET:
+		Bullet();
 		break;
 	case JUDGE:
 		CurrentPositionJudge();

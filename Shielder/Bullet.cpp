@@ -1,15 +1,17 @@
 #include "Pch.h"
-#include "Mover.h"
 
 #include "Bullet.h"
 
 #include "ModelManager.h"
 
-const float Bullet::SPEED = 5.0f;
+const float Bullet::NORMAL_SPEED = 5.0f;
+const float Bullet::SLOW_SPEED = 2.5f;
 const float Bullet::SCALE_BY_DIRECTION_FOR_CORRECTION = 5.0f;
+const float Bullet::COLLIDE_RADIUS = 50.0f;
 
 Bullet::Bullet()
 	:state(NONE)
+	,velocity()
 	,speed(0.0f)
 {
 }
@@ -45,7 +47,11 @@ void Bullet::Activate(const VECTOR& inPosition, const VECTOR& inDirection)
 	direction = inDirection;
 	velocity = ZERO_VECTOR;
 
-	state;
+	collisionSphere.localCenter = VGet(0.0f, 0.0f, 0.0f);
+	collisionSphere.radius = COLLIDE_RADIUS;
+	collisionSphere.worldCenter = position;
+
+	state = NORMAL;
 
 	SetToFrontOfEnemy(inPosition, inDirection);		//エネミーの前方に位置調整
 
@@ -65,16 +71,25 @@ bool Bullet::Update()
 		return false;
 	}
 
-	speed = SPEED;
+	//エネミー攻撃が通常球なら
+	if (state == NORMAL)
+	{
+		speed = NORMAL_SPEED;
+	}
+	else
+	{
+		speed = SLOW_SPEED;
+	}
 
 	//飛んでいるときの処理
 	if (state == NORMAL ||
 		state == SLOW)
 	{
 		Move();
+		return true;
 	}
 
-	return false;
+	return true;
 }
 
 void Bullet::Draw()
@@ -86,8 +101,23 @@ void Bullet::Draw()
 	}
 
 	MV1SetPosition(modelHandle, position);		//3Dモデルのポジション設定
+	collisionSphere.Move(position);				//当たり判定球移動
 
 	MV1DrawModel(modelHandle);	//3Dモデルの描画
+}
+
+void Bullet::Shoot(int attackType)
+{
+	//エネミー攻撃が通常弾なら
+	if (attackType == 1)		
+	{
+		state = NORMAL;
+	}
+	else if(attackType == 2)
+	{
+		state = SLOW;
+	}
+	
 }
 
 void Bullet::SetToFrontOfEnemy(const VECTOR& inPosition, const VECTOR& inDirection)
@@ -103,7 +133,7 @@ void Bullet::SetToFrontOfEnemy(const VECTOR& inPosition, const VECTOR& inDirecti
 
 Bullet::State Bullet::GetState() const
 {
-	return State();
+	return state;
 }
 
 bool Bullet::IsCollidableState() const
@@ -117,10 +147,14 @@ bool Bullet::IsCollidableState() const
 	return false;
 }
 
+void Bullet::OnOutField()
+{
+	state = NONE;
+}
+
 void Bullet::OnHitBreak()
 {
 	state = NONE;
-
 }
 
 void Bullet::Move()

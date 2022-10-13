@@ -22,8 +22,8 @@ public:
 	void Draw();
 
 	void SetNextScene(Scene next);
-	Scene GetCurrentScene();
-	Scene GetNextScene();
+	Scene GetCurrentScene() { return currentScene; }
+	Scene GetNextScene() { return nextScene; }
 private:
 	SceneManager(const SceneManager&);		//コピーコンストラクタ
 	void operator=(const SceneManager&);	//コピー代入演算子

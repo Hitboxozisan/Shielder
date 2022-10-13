@@ -6,6 +6,7 @@ const string ModelManager::FIELD_PATH = "Map/TestMap.mv1";
 const string ModelManager::PLAYER_PATH = "Player/TestPlayer.mv1";
 const string ModelManager::ENEMY_PATH = "Enemy/TestEnemy.mv1";
 const string ModelManager::SHIELD_PATH = "Shield/Shield.mv1";
+const string ModelManager::BULLET_PATH = "Bullet/Bullet.mv1";
 
 ModelManager::ModelManager()
 	:modelHandle()
@@ -37,6 +38,9 @@ void ModelManager::LoadAllModel()
 
 	fullPath = MODEL_FOLDER_PATH + SHIELD_PATH;
 	modelHandle[SHIELD] = MV1LoadModel(fullPath.c_str());
+
+	fullPath = MODEL_FOLDER_PATH + BULLET_PATH;
+	modelHandle[BULLET] = MV1LoadModel(fullPath.c_str());
 
 	for (int i = 0; i < MODEL_AMOUNT; ++i)
 	{

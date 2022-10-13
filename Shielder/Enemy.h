@@ -91,6 +91,8 @@ private:
 	void Back();				//画面端に戻る
 	void Slide();
 
+	void CreateBullet();				//弾を生成する
+	void ShootBullet();					//弾を発射する
 	void CurrentPositionJudge();		//エネミーが画面の右左どちら側にいるか
 
 	void InputAction();

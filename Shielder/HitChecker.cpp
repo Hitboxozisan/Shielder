@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "Shield.h"
+#include "Bullet.h"
 
 HitChecker::HitChecker(int inCharacaterAmount)
 	:characterAmount(inCharacaterAmount)
