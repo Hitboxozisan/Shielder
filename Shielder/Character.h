@@ -46,6 +46,7 @@ public:
 	const float GetCollisionRadius() const { return collisionSphere.radius; }		//“–‚½‚è”»’è‹…‚Ì”¼Œa‚ğ•Ô‚·
 	const bool IsCollidableState() const;											//‰½‚©‚ÆÚG‚Å‚«‚éó‘Ô‚©
 	const float GetInvicibleTime() const { return invincibleTime; }					//–³“GŠÔ‚ÌŒo‰ßŠÔ‚ğ•Ô‚·
+	
 
 	Shield* GetShieldPointer() const { return shield; }
 

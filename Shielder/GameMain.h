@@ -37,6 +37,8 @@ private:
 	GameMain(const GameMain&);
 	void operator=(const GameMain&);
 
+	static const int PLAYER_AMOUNT;
+	static const int ENEMY_AMOUNT;
 	static const int CHARACTER_AMOUNT;
 	static const float MAX_BULLET_AMOUNT;
 
@@ -47,8 +49,8 @@ private:
 	HitChecker* hitchecker;
 	BulletCreater* bulletCreater;
 
-	std::list<Bullet*>* activeBullet;
-	std::list<Bullet*>* deactiveBullet;
+	std::list<Bullet*> activeBullet;
+	std::list<Bullet*> deactiveBullet;
 
 
 	void UpdateStart();

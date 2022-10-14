@@ -14,3 +14,13 @@ extern const VECTOR ZERO_VECTOR;		//ゼロベクトル
 
 extern const VECTOR RIGHT;
 extern const VECTOR LEFT;
+
+
+template <typename T>
+inline void SafeDelete(T*& p)   // ポインタの参照渡し
+{
+    // NULLチェックは不要
+    delete (p);
+    (p) = nullptr;
+
+}
