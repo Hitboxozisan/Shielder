@@ -13,12 +13,13 @@
 const float Enemy::COLLIDE_RADIUS = 50.0f;
 const float Enemy::NORMAL_SPEED = 3.0f;
 const float Enemy::DEFENSE_SPEED = 2.0f;
-const float Enemy::JUMP_DIRECTION_Y = -20.0f;
+const float Enemy::JUMP_DIRECTION_Y = -30.0f;
 const float Enemy::STOP_VELOCITY = 0.5f;
 const float Enemy::FRICTION_FORCE = 0.05f;
-const float Enemy::GRAVITY = 0.1f;
+const float Enemy::GRAVITY = 0.2f;
 const float Enemy::TRUNK_POINT = 100.0f;
 const float Enemy::DECREMENT_TRUNK_POINT = 10.0f;
+const float Enemy::SHOT_INTERVAL = 1.0f;
 
 Enemy::Enemy(BulletCreater* const inBulletCreater)
 	:Character(inBulletCreater)
@@ -28,9 +29,11 @@ Enemy::Enemy(BulletCreater* const inBulletCreater)
 	,stopMove()
 	,currentRightPosition()
 	,shotInterval()
+	,shotCount(0)
 	,physical(FINE)
 	,state(NONE)
 	,attackType()
+	,prevType()
 {
 
 }
@@ -50,9 +53,11 @@ void Enemy::Initialize()
 	direction = ZERO_VECTOR;
 	nextDirction = direction;
 
+
 	//direction = VGet(1.0f, 0.0f, 0.0f);
 
 	state = NORMAL;
+	prevType = attackType;
 	attackType = JUDGE;
 
 	pUpdate = &Enemy::UpdateAttack;
@@ -125,7 +130,6 @@ void Enemy::OnHitOtherCharacter(const VECTOR& forceDirection)
 
 void Enemy::OnHitShield(const VECTOR& adjust)
 {
-
 	//前回のvelocityをリセットする
 	velocity = ZERO_VECTOR;
 	stopTime = 0.0f;
@@ -140,7 +144,6 @@ void Enemy::OnHitShield(const VECTOR& adjust)
 	//後退させる
 	velocity = VAdd(velocity, force);
 	
-
 	trunkPoint -= DECREMENT_TRUNK_POINT;		//体幹ゲージ減少
 	state = SLIDE;
 	pUpdate = &Enemy::UpdateSlide;
@@ -223,6 +226,7 @@ void Enemy::Assault()
 	//3回突進したら次の行動に移る
 	if (assaultCount >= 3.0f)
 	{
+		prevType = attackType;
 		attackType = JUDGE;
 	}
 
@@ -231,11 +235,50 @@ void Enemy::Assault()
 }
 
 
+/// <summary>
+/// 弾発射処理
+/// </summary>
 void Enemy::Bullet()
 {
-	CreateBullet();
-	printfDx("shot");
-	ShootBullet();			//弾を発射
+	shotInterval += DeltaTime::GetInstace().GetDeltaTime();
+	if (shotInterval >= SHOT_INTERVAL)
+	{
+		CreateBullet();			//弾を生成
+		ShootBullet();			//弾を発射
+		shotInterval = 0.0f;	//インターバルをリセット
+		shotCount++;			//発射回数を増加
+	}
+	if (shotCount == 4)
+	{
+		prevType = attackType;
+		attackType = JUDGE;		//判断処理に移る
+	}
+	
+}
+
+/// <summary>
+/// 弾速の遅い弾を発射
+/// </summary>
+void Enemy::SlowBullet()
+{
+	shotInterval += DeltaTime::GetInstace().GetDeltaTime();
+	if (shotInterval >= SHOT_INTERVAL)
+	{
+		CreateBullet();			//弾を生成
+		ShootBullet();			//弾を発射
+		shotInterval = 0.0f;	//インターバルをリセット
+		shotCount++;			//発射回数増加
+		prevType = attackType;
+		attackType = JUDGE;		//判断処理に移る
+	}
+}
+
+/// <summary>
+/// ジャンプ後プレイヤーに向かって突進
+/// </summary>
+void Enemy::JumpKick()
+{
+
 }
 
 /// <summary>
@@ -278,12 +321,21 @@ void Enemy::Back()
 	if (nextPosition.y < 0.0f)
 	{
 		velocity = ZERO_VECTOR;
-		assaultCount = 0.0f;		//突進回数をリセット
+		assaultCount = 0;		//突進回数をリセット
 		returnForce = ZERO_VECTOR;
 		position.y = 0.0f;
 		nextPosition.y = 0.0f;
-		int nextAttack = next(eng);	//次の行動を指定(未実装)
-		attackType = BULLET;		//次の状態に移行する
+		if (prevType == SLOW_BULLET && shotCount >= 3.0f)
+		{
+			attackType = SLOW_BULLET;
+		}
+		else
+		{
+			shotCount = 0;				//発射回数をリセット
+			int nextAttack = next(eng);	//次の行動を指定(未実装)
+			prevType = attackType;
+			attackType = BULLET;		//次の状態に移行する
+		}
 	}
 }
 
@@ -307,6 +359,7 @@ void Enemy::Slide()
 	{
 		velocity = ZERO_VECTOR;
 		state = NORMAL;
+		prevType = attackType;
 		attackType = JUDGE;
 		pUpdate = &Enemy::UpdateAttack;
 	}
@@ -323,7 +376,6 @@ void Enemy::CreateBullet()
 	{
 		bullet = bulletCreater->Create(position, direction);		//弾を生成
 	}
-	
 }
 
 /// <summary>
@@ -337,16 +389,10 @@ void Enemy::ShootBullet()
 		return;
 	}
 
-	shotInterval += DeltaTime::GetInstace().GetDeltaTime();
-	if (shotInterval >= 2.0f)
-	{
-		shotInterval = 0.0f;
-		bullet->Shoot(static_cast<int>(attackType));
-		attackType = JUDGE;
-	}
+	bullet->Shoot(static_cast<int>(attackType));
+	//attackType = JUDGE;	
 
 	//規定回数攻撃したら次の行動に移る
-
 	//bullet = nullptr;
 }
 
@@ -356,7 +402,7 @@ void Enemy::ShootBullet()
 void Enemy::CurrentPositionJudge()
 {
 	float sub;
-	returnForce = VGet(10.0f, 0.0f, 0.0f);
+	returnForce = VGet(13.0f, 0.0f, 0.0f);
 	returnForce.y = JUMP_DIRECTION_Y;
 
 	//エネミーの現在地が右端寄りなら
@@ -365,6 +411,7 @@ void Enemy::CurrentPositionJudge()
 		
 		returnForce = VScale(returnForce, -0.6f);
 		//画面端に戻る
+		prevType = attackType;
 		attackType = BACK;
 		currentRightPosition = true;		//右端にいる状態に
 
@@ -380,6 +427,7 @@ void Enemy::CurrentPositionJudge()
 		returnForce = VScale(returnForce, 0.6f);
 		returnForce.y *= -1.0f;				//ジャンプするよう補正する
 		//画面端に戻る
+		prevType = attackType;
 		attackType = BACK;
 		currentRightPosition = false;		//左端にいる状態に
 
@@ -430,6 +478,9 @@ void Enemy::UpdateAttack()
 		Assault();
 		break;
 	case BULLET:
+		Bullet();
+		break;
+	case SLOW_BULLET:
 		Bullet();
 		break;
 	case JUDGE:

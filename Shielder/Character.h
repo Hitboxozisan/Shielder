@@ -49,6 +49,7 @@ public:
 	
 
 	Shield* GetShieldPointer() const { return shield; }
+	Bullet* GetBulletPointer() const { return bullet; }
 
 	//デバッグ用
 	const VECTOR& GetVelocity() const { return velocity; }		// 現在の速度、加速度、向き

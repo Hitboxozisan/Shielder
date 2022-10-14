@@ -15,11 +15,6 @@ BulletCreater::~BulletCreater()
 
 Bullet* BulletCreater::Create(const VECTOR& inPosition, const VECTOR& inDirection)
 {
-	if (IsCreatableCheck() == false)
-	{
-
-	}
-
 	activeBullet->push_back(deActiveBullet->front());
 	deActiveBullet->pop_front();
 	activeBullet->back()->Activate(inPosition, inDirection);

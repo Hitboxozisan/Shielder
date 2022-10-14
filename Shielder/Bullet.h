@@ -29,6 +29,8 @@ public:
 	State GetState() const;
 	bool IsCollidableState() const;
 
+	const float GetCollisionRadius() const { return collisionSphere.radius; }
+
 	void OnOutField();			//フィールド外に出た
 	void OnHitBreak();			//何かに当たって壊れる
 

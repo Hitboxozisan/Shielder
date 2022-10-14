@@ -151,7 +151,7 @@ void GameMain::UpdateGame()
 	//ƒvƒŒƒCƒ„[‚ª€‚ñ‚Å‚¢‚ê‚Î
 	
 
-	hitchecker->Check(character, character[0]->GetShieldPointer());
+	hitchecker->Check(character, character[0]->GetShieldPointer(), character[1]->GetBulletPointer());
 	camera->Update(character);
 }
 

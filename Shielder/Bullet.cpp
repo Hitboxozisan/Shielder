@@ -4,7 +4,7 @@
 
 #include "ModelManager.h"
 
-const float Bullet::NORMAL_SPEED = 5.0f;
+const float Bullet::NORMAL_SPEED = 12.0f;
 const float Bullet::SLOW_SPEED = 2.5f;
 const float Bullet::SCALE_BY_DIRECTION_FOR_CORRECTION = 5.0f;
 const float Bullet::COLLIDE_RADIUS = 50.0f;
@@ -32,7 +32,6 @@ void Bullet::Initialize()
 	{
 		printfDx("モデルデータ読み込みに失敗_Bullet\n");
 	}
-
 }
 
 void Bullet::Finalize()
@@ -55,7 +54,8 @@ void Bullet::Activate(const VECTOR& inPosition, const VECTOR& inDirection)
 
 	SetToFrontOfEnemy(inPosition, inDirection);		//エネミーの前方に位置調整
 
-	MV1SetScale(modelHandle, VGet(1.0f, 1.0f, 1.0f));	//モデル拡大縮小
+	MV1SetScale(modelHandle, VGet(0.5f, 0.5f, 0.2f));	//モデル拡大縮小
+	MV1SetRotationXYZ(modelHandle, VGet(0.0f, 1.5f, 0.0f));
 }
 
 void Bullet::Deactivate()
@@ -81,6 +81,7 @@ bool Bullet::Update()
 		speed = SLOW_SPEED;
 	}
 
+	//テスト用direction
 	direction = VGet(0.5f, 0.0f, 0.0f);
 
 	//飛んでいるときの処理
@@ -103,9 +104,13 @@ void Bullet::Draw()
 	}
 
 	MV1SetPosition(modelHandle, position);		//3Dモデルのポジション設定
-	collisionSphere.Move(position);				//当たり判定球移動
+	
 
 	MV1DrawModel(modelHandle);	//3Dモデルの描画
+
+	//当たり判定デバック描画
+	DrawSphere3D(collisionSphere.worldCenter, collisionSphere.radius,
+		8, GetColor(0, 255, 0), 0, FALSE);
 }
 
 void Bullet::Shoot(int attackType)
@@ -161,5 +166,11 @@ void Bullet::OnHitBreak()
 
 void Bullet::Move()
 {
+	//画面外に出たら消滅させる
+	if (position.x <= SCREEN_LEFTMOST || position.x >= SCREEN_RIGHTMOST)
+	{
+		OnOutField();
+	}
 	position = VAdd(position, VScale(direction, speed));	//向いている方向に移動
+	collisionSphere.Move(position);				//当たり判定球移動
 }

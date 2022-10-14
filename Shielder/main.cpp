@@ -43,7 +43,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	character[1] = new Enemy(bulleteCreater);
 	character[1]->Initialize();
 	//敵の弾
-	for (int i = 0; i < 4; ++i)
+	for (int i = 0; i < 8; ++i)
 	{
 		deactiveBullet.push_back(new Bullet());
 		deactiveBullet.back()->Initialize();
@@ -106,7 +106,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}*/
 
 		//当たり判定
-		hitchecker->Check(character, character[0]->GetShieldPointer());
+		hitchecker->Check(character, character[0]->GetShieldPointer(), character[1]->GetBulletPointer());
 
 		//画面更新処理
 		ClearDrawScreen();
@@ -129,6 +129,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			shield->Draw();
 		}*/
 
+#ifdef DEBUG
 		//UIデバッグ
 		DrawFormatString(50, 70, GetColor(255, 255, 255), "P::position.x : %f", character[0]->GetPosition().x);
 		DrawFormatString(50, 90, GetColor(255, 255, 255), "E::position.x : %f", character[1]->GetPosition().x);
@@ -141,6 +142,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		//カメラの現在地を表示
 		DrawFormatString(300, 70, GetColor(255, 255, 255), "Camera.X : %f\nCamera.Y : %f\nCamera.Z : %f", camera->GetCameraPosition().x, camera->GetCameraPosition().y, camera->GetCameraPosition().z);
 
+#endif // DEBUG
+
+		
 		// 位置関係が分かるように地面にラインを描画する
 		{
 			int i;

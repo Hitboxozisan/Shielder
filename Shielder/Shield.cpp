@@ -38,6 +38,7 @@ Shield::~Shield()
 
 void Shield::Create()
 {
+
 }
 
 void Shield::Activate(const VECTOR& inPosition, const VECTOR& inDirection, const VECTOR& inPrevDirection)

@@ -61,6 +61,7 @@ private:
 	static const float GRAVITY;								//重力
 	static const float TRUNK_POINT;							//体幹ゲージ
 	static const float DECREMENT_TRUNK_POINT;				//体幹ゲージ減少量
+	static const float SHOT_INTERVAL;
 
 	int assaultCount;
 	float movedDistance;			//移動を始めてからの移動量
@@ -68,7 +69,7 @@ private:
 	bool stopMove;					//停止しているか
 	bool currentRightPosition;		//右側にいるか
 	float shotInterval;				//発射間隔
-
+	int   shotCount;				//発射回数
 
 	void (Enemy::*pUpdate)();				//Update関数ポインタ
 
@@ -77,7 +78,7 @@ private:
 	EnemyState physical;
 	State state;
 	AttackType attackType;					//敵の行動パターン
-
+	AttackType prevType;					//前回の行動パターン
 	
 	void UpdateFine();
 	void UpdateCaution();
@@ -91,6 +92,8 @@ private:
 	void MoveFinish();
 	void Assault();				//突進攻撃
 	void Bullet();				//弾発射
+	void SlowBullet();
+	void JumpKick();			//ジャンプ後プレイヤーに向かって突進
 	void Back();				//画面端に戻る
 	void Slide();
 
