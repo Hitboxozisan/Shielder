@@ -27,8 +27,9 @@ const float Player::INVINCIBLE_TIME = 5.0f;
 /// <summary>
 /// コンストラクタ
 /// </summary>
-Player::Player()
-	:state()
+Player::Player(BulletCreater* const inBulletCreater)
+	:Character(inBulletCreater)
+	,state()
 	,justDefenceTime()
 	,normalDefenceTime()
 	,isDefense()

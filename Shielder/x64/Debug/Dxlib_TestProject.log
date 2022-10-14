@@ -1,40 +1,4 @@
-﻿  Bullet.cpp
-  BulletCreater.cpp
-  Camera.cpp
-C:\Users\student\Desktop\Shielder\Camera.cpp(29,41): warning C4305: '初期化中': 'double' から 'float' へ切り詰めます。
-C:\Users\student\Desktop\Shielder\Camera.cpp(49,16): warning C4244: '=': 'double' から 'float' への変換です。データが失われる可能性があります。
-C:\Users\student\Desktop\Shielder\Camera.cpp(50,16): warning C4244: '=': 'double' から 'float' への変換です。データが失われる可能性があります。
-C:\Users\student\Desktop\Shielder\Camera.cpp(56,16): warning C4244: '=': 'double' から 'float' への変換です。データが失われる可能性があります。
-C:\Users\student\Desktop\Shielder\Camera.cpp(57,16): warning C4244: '=': 'double' から 'float' への変換です。データが失われる可能性があります。
-  Character.cpp
-  Collision.cpp
-  DeltaTime.cpp
-  EffectManager.cpp
-  Enemy.cpp
-C:\Users\student\Desktop\Shielder\Enemy.cpp(264,18): warning C4244: '=': 'float' から 'int' への変換です。データが失われる可能性があります。
-C:\Users\student\Desktop\Shielder\Enemy.cpp(330,8): warning C4101: 'sub': ローカル変数は 1 度も使われていません。
-  EnemyBase.cpp
-  Field.cpp
-  GameDefine.cpp
-  GameMain.cpp
-  HitChecker.cpp
-  KeyManager.cpp
-  main.cpp
-  Math3d.cpp
-C:\Users\student\Desktop\Shielder\Math3d.cpp(125,26): warning C4244: '引数': 'float' から 'int' への変換です。データが失われる可能性があります。
-  ModelManager.cpp
-  Mover.cpp
-  ObjectBase.cpp
-  Player.cpp
-  コードを生成中...
-  コンパイル中...
-  SceneBase.cpp
-  SceneManager.cpp
-  Shield.cpp
-  ShieldCreater.cpp
-  Title.cpp
-  コードを生成中...
-GameMain.obj : error LNK2001: 外部シンボル "private: static int const GameMain::PLAYER_AMOUNT" (?PLAYER_AMOUNT@GameMain@@0HB) は未解決です
-GameMain.obj : error LNK2001: 外部シンボル "private: static int const GameMain::CHARACTER_AMOUNT" (?CHARACTER_AMOUNT@GameMain@@0HB) は未解決です
-GameMain.obj : error LNK2001: 外部シンボル "private: static float const GameMain::MAX_BULLET_AMOUNT" (?MAX_BULLET_AMOUNT@GameMain@@0MB) は未解決です
-C:\Users\student\Desktop\Shielder\x64\Debug\Dxlib_TestProject.exe : fatal error LNK1120: 3 件の未解決の外部参照
+﻿  Enemy.cpp
+C:\Users\gaiya\Desktop\Shielder\Enemy.cpp(281,18): warning C4244: '=': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\gaiya\Desktop\Shielder\Enemy.cpp(358,8): warning C4101: 'sub': ローカル変数は 1 度も使われていません。
+  Dxlib_TestProject.vcxproj -> C:\Users\gaiya\Desktop\Shielder\x64\Debug\Dxlib_TestProject.exe

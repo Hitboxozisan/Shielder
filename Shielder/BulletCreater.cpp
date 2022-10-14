@@ -15,7 +15,7 @@ BulletCreater::~BulletCreater()
 
 Bullet* BulletCreater::Create(const VECTOR& inPosition, const VECTOR& inDirection)
 {
-	if (isCreatableCheck() == false)
+	if (IsCreatableCheck() == false)
 	{
 
 	}
@@ -27,7 +27,7 @@ Bullet* BulletCreater::Create(const VECTOR& inPosition, const VECTOR& inDirectio
 	return activeBullet->back();
 }
 
-bool BulletCreater::isCreatableCheck()
+bool BulletCreater::IsCreatableCheck()
 {
 	//‹ó‚«‚ª‚ ‚é
 	if (deActiveBullet->empty() == false)

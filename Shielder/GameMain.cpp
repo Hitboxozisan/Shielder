@@ -12,10 +12,10 @@
 #include "Bullet.h"
 #include "BulletCreater.h"
 
-const int PLAYER_AMOUNT = 1;
-const int ENEMY_AMOUNT = 1;
-const int CHARACTER_AMOUNT = PLAYER_AMOUNT + ENEMY_AMOUNT;
-const float MAX_BULLET_AMOUNT = 3;
+const int	GameMain::PLAYER_AMOUNT = 1;
+const int	GameMain::ENEMY_AMOUNT = 1;
+const int	GameMain::CHARACTER_AMOUNT = PLAYER_AMOUNT + ENEMY_AMOUNT;
+const float GameMain::MAX_BULLET_AMOUNT = 3;
 
 GameMain::GameMain(SceneManager* const sceneManager)
 	:SceneBase(sceneManager)
@@ -47,14 +47,14 @@ void GameMain::Initialize()
 	//プレイヤー
 	for (int i = 0; i < PLAYER_AMOUNT; i++)
 	{
-		character[i] = new Player();
+		character[i] = new Player(bulletCreater);
 		character[i]->Initialize();
 	}
 
 	//エネミー
 	for (int i = PLAYER_AMOUNT; i < CHARACTER_AMOUNT; ++i)
 	{
-		character[i] = new Enemy();
+		character[i] = new Enemy(bulletCreater);
 		character[i]->Initialize();
 	}
 

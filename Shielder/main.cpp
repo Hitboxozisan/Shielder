@@ -31,13 +31,23 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		return -1;
 	}
 
+	std::list<Bullet*> activeBullet;
+	std::list<Bullet*> deactiveBullet;
+
 	ModelManager::GetInstance();
+	BulletCreater* bulleteCreater = new BulletCreater(&activeBullet, &deactiveBullet);
 	Character** character = new Character * [1]();
 	//BulletCreater* bulletCreater = new BulletCreater();
-	character[0] = new Player;
+	character[0] = new Player(bulleteCreater);
 	character[0]->Initialize();
-	character[1] = new Enemy;
+	character[1] = new Enemy(bulleteCreater);
 	character[1]->Initialize();
+	//敵の弾
+	for (int i = 0; i < 4; ++i)
+	{
+		deactiveBullet.push_back(new Bullet());
+		deactiveBullet.back()->Initialize();
+	}
 	Camera* camera = new Camera;
 	camera->Initialize();
 	camera->SetPosition(character);
@@ -72,6 +82,21 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			character[i]->Update();
 		}
 
+		for (auto itr = activeBullet.begin(); itr != activeBullet.end();)
+		{
+			//消えていたら非アクティブリストへ
+			if ((*itr)->Update() == false)
+			{
+				(*itr)->Deactivate();
+				deactiveBullet.push_back(*itr);
+				itr = activeBullet.erase(itr);
+			}
+			else
+			{
+				++itr;
+			}
+		}
+
 		/*player->Update();
 		enemy->Update();*/
 		/*shield->Activate(player->GetPosition(), player->GetDirection());
@@ -90,6 +115,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		for (int i = 0; i <= 1; ++i)
 		{
 			character[i]->Draw();
+		}
+
+		for (auto itr = activeBullet.begin(); itr != activeBullet.end(); ++itr)
+		{
+			//消えていたら非アクティブリストへ
+			(*itr)->Draw();
 		}
 		/*player->Draw();
 		enemy->Draw();*/

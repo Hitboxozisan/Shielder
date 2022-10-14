@@ -12,7 +12,7 @@ public:
 	~BulletCreater();
 
 	Bullet* Create(const VECTOR& inPosition, const VECTOR& inDirection);
-	bool isCreatableCheck();
+	bool IsCreatableCheck();
 
 private:
 	//BulletCreater();

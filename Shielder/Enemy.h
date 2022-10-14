@@ -37,7 +37,7 @@ public:
 		ATTACK_AMOUST	//行動パターン数
 	};
 
-	Enemy();
+	Enemy(BulletCreater* const);
 	~Enemy();
 	void Initialize();
 	void Update();
@@ -48,6 +48,8 @@ public:
 
 	//const bool IsCollidableState() const;
 	const float GetTrunk() const { return trunkPoint; }
+	//デバッグ
+	const float GetInterval() const { return shotInterval; }
 
 private:
 	static const float COLLIDE_RADIUS;
@@ -65,6 +67,7 @@ private:
 	float stopTime;					//停止してからの経過時間
 	bool stopMove;					//停止しているか
 	bool currentRightPosition;		//右側にいるか
+	float shotInterval;				//発射間隔
 
 
 	void (Enemy::*pUpdate)();				//Update関数ポインタ

@@ -20,12 +20,14 @@ const float Enemy::GRAVITY = 0.1f;
 const float Enemy::TRUNK_POINT = 100.0f;
 const float Enemy::DECREMENT_TRUNK_POINT = 10.0f;
 
-Enemy::Enemy()
-	:assaultCount(0)
+Enemy::Enemy(BulletCreater* const inBulletCreater)
+	:Character(inBulletCreater)
+	,assaultCount(0)
 	,movedDistance(0.0f)
 	,stopTime(0.0f)
 	,stopMove()
 	,currentRightPosition()
+	,shotInterval()
 	,physical(FINE)
 	,state(NONE)
 	,attackType()
@@ -106,10 +108,12 @@ void Enemy::Draw()
 	//UI
 	DrawFormatString(300, 130, GetColor(255, 255, 255), "E : %f", this->GetTrunk(), TRUE);		//体幹ゲージ表示
 	DrawFormatString(300, 170, GetColor(255, 255, 255), "MD : %f", movedDistance, TRUE);
+	DrawFormatString(300, 190, GetColor(255, 255, 255), "Interval : %f", GetInterval(), TRUE);
 
 	//当たり判定デバック描画
 	DrawSphere3D(collisionSphere.worldCenter, collisionSphere.radius,
 		8, GetColor(0, 255, 0), 0, FALSE);
+	
 }
 
 void Enemy::OnHitOtherCharacter(const VECTOR& forceDirection)
@@ -230,6 +234,7 @@ void Enemy::Assault()
 void Enemy::Bullet()
 {
 	CreateBullet();
+	printfDx("shot");
 	ShootBullet();			//弾を発射
 }
 
@@ -243,6 +248,9 @@ void Enemy::Back()
 	std::mt19937 eng(rd());
 	std::uniform_int_distribution<int> next(0, ATTACK_AMOUST);
 
+	float rightPos = SCREEN_RIGHTMOST - 1.0f;
+	float leftPos = SCREEN_LEFTMOST + 1.0f;
+
 	int attackAmoust = ATTACK_AMOUST;
 	returnForce.y -= GRAVITY;
 
@@ -252,13 +260,22 @@ void Enemy::Back()
 	}
 	else
 	{
-		returnForce.x = 0.0f;		//横移動を停止させる
+		//飛んできた位置が右寄りかどうかで補正位置を選択
+		if (!currentRightPosition)
+		{
+			nextPosition.x = rightPos;
+		}
+		else
+		{
+			nextPosition.x = leftPos;
+		}
+		returnForce.x = 0.0f;								//横移動を停止させる
 	}
 
 	nextPosition = VAdd(nextPosition, returnForce);			//画面端まで移動
 
 	//地面に着地したら落下を止める
-	if (nextPosition.y <= 0.0f)
+	if (nextPosition.y < 0.0f)
 	{
 		velocity = ZERO_VECTOR;
 		assaultCount = 0.0f;		//突進回数をリセット
@@ -302,11 +319,11 @@ void Enemy::Slide()
 /// </summary>
 void Enemy::CreateBullet()
 {
-	if (bulletCreater->isCreatableCheck() == true)
+	if (bulletCreater->IsCreatableCheck() == true)
 	{
 		bullet = bulletCreater->Create(position, direction);		//弾を生成
-		printfDx("create");
 	}
+	
 }
 
 /// <summary>
@@ -320,11 +337,22 @@ void Enemy::ShootBullet()
 		return;
 	}
 
-	bullet->Shoot(static_cast<int>(attackType));
+	shotInterval += DeltaTime::GetInstace().GetDeltaTime();
+	if (shotInterval >= 2.0f)
+	{
+		shotInterval = 0.0f;
+		bullet->Shoot(static_cast<int>(attackType));
+		attackType = JUDGE;
+	}
 
-	bullet = nullptr;
+	//規定回数攻撃したら次の行動に移る
+
+	//bullet = nullptr;
 }
 
+/// <summary>
+/// エネミーの現在位置を判断
+/// </summary>
 void Enemy::CurrentPositionJudge()
 {
 	float sub;
@@ -335,7 +363,7 @@ void Enemy::CurrentPositionJudge()
 	if (SCREEN_RIGHTMOST - position.x <= SCREEN_CENTER)
 	{
 		
-		returnForce = VScale(returnForce, -0.5f);
+		returnForce = VScale(returnForce, -0.6f);
 		//画面端に戻る
 		attackType = BACK;
 		currentRightPosition = true;		//右端にいる状態に
@@ -349,7 +377,8 @@ void Enemy::CurrentPositionJudge()
 	//エネミーの現在地が左寄りなら
 	else
 	{
-		returnForce = VScale(returnForce, 0.5f);
+		returnForce = VScale(returnForce, 0.6f);
+		returnForce.y *= -1.0f;				//ジャンプするよう補正する
 		//画面端に戻る
 		attackType = BACK;
 		currentRightPosition = false;		//左端にいる状態に

@@ -81,6 +81,8 @@ bool Bullet::Update()
 		speed = SLOW_SPEED;
 	}
 
+	direction = VGet(0.5f, 0.0f, 0.0f);
+
 	//”ò‚ñ‚Å‚¢‚é‚Æ‚«‚Ìˆ—
 	if (state == NORMAL ||
 		state == SLOW)

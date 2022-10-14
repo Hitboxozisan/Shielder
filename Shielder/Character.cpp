@@ -11,14 +11,14 @@ using namespace My3dLib;
 //const float Character::HIT_OTHER_CHARACTER_DIRECTION_Y = 5.0f;
 //const float Character::GRAVITY = 0.1f;
 
-Character::Character()
+Character::Character(BulletCreater* const inBulletCreater)
 	:speed(0.0f)
 	,velocity()
 	,nextPosition()
 	,nextDirction()
 	,prevPosition()
 	,noDrawFrame()
-	,bulletCreater()
+	,bulletCreater(inBulletCreater)
 {
 }
 

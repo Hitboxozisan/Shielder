@@ -17,7 +17,7 @@ public:
 		DEAD		//Ž€–S
 	};
 	
-	Player();
+	Player(BulletCreater* const);
 	~Player();
 
 	void Initialize();

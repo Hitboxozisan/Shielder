@@ -26,7 +26,7 @@ class BulletCreater;
 class Character : public Mover
 {
 public:
-	Character();
+	Character(BulletCreater* const);
 	virtual ~Character();
 
 	virtual void Initialize();
