@@ -4,7 +4,7 @@
 
 #include "ModelManager.h"
 
-const float Bullet::NORMAL_SPEED = 12.0f;
+const float Bullet::NORMAL_SPEED = 15.0f;
 const float Bullet::SLOW_SPEED = 2.5f;
 const float Bullet::SCALE_BY_DIRECTION_FOR_CORRECTION = 5.0f;
 const float Bullet::COLLIDE_RADIUS = 50.0f;
@@ -82,7 +82,7 @@ bool Bullet::Update()
 	}
 
 	//テスト用direction
-	direction = VGet(0.5f, 0.0f, 0.0f);
+	//direction = VGet(0.5f, 0.0f, 0.0f);
 
 	//飛んでいるときの処理
 	if (state == NORMAL ||

@@ -16,7 +16,7 @@ const float Enemy::DEFENSE_SPEED = 2.0f;
 const float Enemy::JUMP_DIRECTION_Y = -30.0f;
 const float Enemy::STOP_VELOCITY = 0.5f;
 const float Enemy::FRICTION_FORCE = 0.05f;
-const float Enemy::GRAVITY = 0.2f;
+const float Enemy::GRAVITY = 0.25f;
 const float Enemy::TRUNK_POINT = 100.0f;
 const float Enemy::DECREMENT_TRUNK_POINT = 10.0f;
 const float Enemy::SHOT_INTERVAL = 1.0f;
@@ -95,6 +95,7 @@ void Enemy::Update()
 		}
 	}
 
+
 	
 	/*if (!stopMove)
 	{
@@ -114,6 +115,8 @@ void Enemy::Draw()
 	DrawFormatString(300, 130, GetColor(255, 255, 255), "E : %f", this->GetTrunk(), TRUE);		//体幹ゲージ表示
 	DrawFormatString(300, 170, GetColor(255, 255, 255), "MD : %f", movedDistance, TRUE);
 	DrawFormatString(300, 190, GetColor(255, 255, 255), "Interval : %f", GetInterval(), TRUE);
+	DrawFormatString(300, 210, GetColor(255, 255, 255), "AT : %d", attackType);
+	DrawFormatString(300, 230, GetColor(255, 255, 255), "ShotCount : %d", shotCount);
 
 	//当たり判定デバック描画
 	DrawSphere3D(collisionSphere.worldCenter, collisionSphere.radius,
@@ -148,7 +151,7 @@ void Enemy::OnHitShield(const VECTOR& adjust)
 	state = SLIDE;
 	pUpdate = &Enemy::UpdateSlide;
 	
-	bullet = nullptr;
+	//bullet = nullptr;
 }
 
 //const bool Enemy::IsCollidableState() const
@@ -226,7 +229,6 @@ void Enemy::Assault()
 	//3回突進したら次の行動に移る
 	if (assaultCount >= 3.0f)
 	{
-		prevType = attackType;
 		attackType = JUDGE;
 	}
 
@@ -250,7 +252,6 @@ void Enemy::Bullet()
 	}
 	if (shotCount == 4)
 	{
-		prevType = attackType;
 		attackType = JUDGE;		//判断処理に移る
 	}
 	
@@ -279,6 +280,8 @@ void Enemy::SlowBullet()
 void Enemy::JumpKick()
 {
 
+
+	attackType = JUDGE;
 }
 
 /// <summary>
@@ -289,16 +292,15 @@ void Enemy::Back()
 	//乱数用変数
 	std::random_device rd;
 	std::mt19937 eng(rd());
-	std::uniform_int_distribution<int> next(0, ATTACK_AMOUST);
+	std::uniform_int_distribution<int> next(0, ATTACK_AMOUST - 1);
 
 	float rightPos = SCREEN_RIGHTMOST - 1.0f;
 	float leftPos = SCREEN_LEFTMOST + 1.0f;
 
-	int attackAmoust = ATTACK_AMOUST;
 	returnForce.y -= GRAVITY;
 
 	//画面端まで移動
-	if (position.x >= SCREEN_LEFTMOST && position.x <= SCREEN_RIGHTMOST)
+	if (nextPosition.x >= SCREEN_LEFTMOST && nextPosition.x <= SCREEN_RIGHTMOST)
 	{
 	}
 	else
@@ -316,25 +318,26 @@ void Enemy::Back()
 	}
 
 	nextPosition = VAdd(nextPosition, returnForce);			//画面端まで移動
+	//collisionSphere.Move(position);
 
 	//地面に着地したら落下を止める
 	if (nextPosition.y < 0.0f)
 	{
 		velocity = ZERO_VECTOR;
-		assaultCount = 0;		//突進回数をリセット
+		assaultCount = 0;			//突進回数をリセット
 		returnForce = ZERO_VECTOR;
 		position.y = 0.0f;
 		nextPosition.y = 0.0f;
-		if (prevType == SLOW_BULLET && shotCount >= 3.0f)
+		if (prevType == SLOW_BULLET && shotCount <= 2.0f)
 		{
 			attackType = SLOW_BULLET;
 		}
 		else
 		{
 			shotCount = 0;				//発射回数をリセット
-			int nextAttack = next(eng);	//次の行動を指定(未実装)
-			prevType = attackType;
-			attackType = BULLET;		//次の状態に移行する
+			int nextAttack = next(eng);	//次の行動を指定
+			AttackType at = static_cast<AttackType>(nextAttack);	//列挙型に変換する
+			attackType = JUMPKICK;		//次の状態に移行する
 		}
 	}
 }
@@ -359,7 +362,6 @@ void Enemy::Slide()
 	{
 		velocity = ZERO_VECTOR;
 		state = NORMAL;
-		prevType = attackType;
 		attackType = JUDGE;
 		pUpdate = &Enemy::UpdateAttack;
 	}
@@ -408,12 +410,11 @@ void Enemy::CurrentPositionJudge()
 	//エネミーの現在地が右端寄りなら
 	if (SCREEN_RIGHTMOST - position.x <= SCREEN_CENTER)
 	{
-		
-		returnForce = VScale(returnForce, -0.6f);
-		//画面端に戻る
-		prevType = attackType;
-		attackType = BACK;
 		currentRightPosition = true;		//右端にいる状態に
+		returnForce = VScale(returnForce, -0.7f);
+		nextDirction = VGet(1.0f, 0.0f, 0.0f);
+		//画面端に戻る
+		attackType = BACK;
 
 		//左端に近くなったら
 		if (position.x - SCREEN_LEFTMOST <= 150.0f)
@@ -424,12 +425,13 @@ void Enemy::CurrentPositionJudge()
 	//エネミーの現在地が左寄りなら
 	else
 	{
-		returnForce = VScale(returnForce, 0.6f);
-		returnForce.y *= -1.0f;				//ジャンプするよう補正する
-		//画面端に戻る
-		prevType = attackType;
-		attackType = BACK;
 		currentRightPosition = false;		//左端にいる状態に
+		returnForce = VScale(returnForce, 0.7f);
+		returnForce.y *= -1.0f;				//ジャンプするよう補正する
+		nextDirction = VGet(-1.0f, 0.0f, 0.0f);
+		//画面端に戻る
+		attackType = BACK;
+		
 
 		//右端が近くなったら
 		if (SCREEN_RIGHTMOST - position.x <= 150.0f)
@@ -472,6 +474,7 @@ void Enemy::UpdateNormal()
 
 void Enemy::UpdateAttack()
 {
+	//各行動パターンに応じた行動処理
 	switch (attackType)
 	{
 	case ASSAULT:
@@ -481,7 +484,10 @@ void Enemy::UpdateAttack()
 		Bullet();
 		break;
 	case SLOW_BULLET:
-		Bullet();
+		SlowBullet();
+		break;
+	case JUMPKICK:
+		JumpKick();
 		break;
 	case JUDGE:
 		CurrentPositionJudge();

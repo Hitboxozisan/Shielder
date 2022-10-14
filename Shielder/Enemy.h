@@ -29,7 +29,7 @@ public:
 		ASSAULT = 0,	//突進攻撃
 		BULLET,			//通常弾発射
 		SLOW_BULLET,	//遅延弾発射
-		JUMP,			//ジャンプ
+		//JUMP,			//ジャンプ
 		JUMPKICK,		//ジャンプからキック
 		JUDGE,			//どこにいるか判断
 		BACK,			//画面端に戻る
