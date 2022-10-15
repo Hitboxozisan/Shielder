@@ -14,6 +14,8 @@ public:
 
 
 private:
+	
+
 	EffectManager(const EffectManager&);
 	void operator=(const EffectManager&);
 

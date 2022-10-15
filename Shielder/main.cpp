@@ -9,6 +9,7 @@
 #include "Bullet.h"
 #include "BulletCreater.h"
 #include "ModelManager.h"
+#include "Background.h"
 #include "KeyManager.h"
 #include "HitChecker.h"
 #include "DeltaTime.h"
@@ -51,6 +52,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	Camera* camera = new Camera;
 	camera->Initialize();
 	camera->SetPosition(character);
+	Background* background = new Background;
+	background->Initialize();
 	HitChecker* hitchecker = new HitChecker(1);
 	
 	//Player* player = new Player;
@@ -111,6 +114,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		//‰æ–ÊXVˆ—
 		ClearDrawScreen();
 		
+		background->Draw();
+
 		//•`‰æ
 		for (int i = 0; i <= 1; ++i)
 		{

@@ -13,6 +13,7 @@
 const float Enemy::COLLIDE_RADIUS = 50.0f;
 const float Enemy::NORMAL_SPEED = 3.0f;
 const float Enemy::DEFENSE_SPEED = 2.0f;
+const float Enemy::KICK_SPEED = 7.0f;							
 const float Enemy::JUMP_DIRECTION_Y = -30.0f;
 const float Enemy::STOP_VELOCITY = 0.5f;
 const float Enemy::FRICTION_FORCE = 0.05f;
@@ -279,9 +280,19 @@ void Enemy::SlowBullet()
 /// </summary>
 void Enemy::JumpKick()
 {
+	bool isKick;
+
+	//一定高さまでジャンプしたら
+	if (nextPosition.y <= 200.0f)
+	{
+		//反対側までキックする
 
 
-	attackType = JUDGE;
+	}
+	if (nextPosition.y <= 0.0f)
+	{
+		attackType = JUDGE;
+	}
 }
 
 /// <summary>
@@ -289,11 +300,7 @@ void Enemy::JumpKick()
 /// </summary>
 void Enemy::Back()
 {
-	//乱数用変数
-	std::random_device rd;
-	std::mt19937 eng(rd());
-	std::uniform_int_distribution<int> next(0, ATTACK_AMOUST - 1);
-
+	
 	float rightPos = SCREEN_RIGHTMOST - 1.0f;
 	float leftPos = SCREEN_LEFTMOST + 1.0f;
 
@@ -323,22 +330,7 @@ void Enemy::Back()
 	//地面に着地したら落下を止める
 	if (nextPosition.y < 0.0f)
 	{
-		velocity = ZERO_VECTOR;
-		assaultCount = 0;			//突進回数をリセット
-		returnForce = ZERO_VECTOR;
-		position.y = 0.0f;
-		nextPosition.y = 0.0f;
-		if (prevType == SLOW_BULLET && shotCount <= 2.0f)
-		{
-			attackType = SLOW_BULLET;
-		}
-		else
-		{
-			shotCount = 0;				//発射回数をリセット
-			int nextAttack = next(eng);	//次の行動を指定
-			AttackType at = static_cast<AttackType>(nextAttack);	//列挙型に変換する
-			attackType = JUMPKICK;		//次の状態に移行する
-		}
+		SetNextAttack();
 	}
 }
 
@@ -396,6 +388,41 @@ void Enemy::ShootBullet()
 
 	//規定回数攻撃したら次の行動に移る
 	//bullet = nullptr;
+}
+
+/// <summary>
+/// 次の行動を決定する
+/// </summary>
+void Enemy::SetNextAttack()
+{
+	//乱数用変数
+	std::random_device rd;
+	std::mt19937 eng(rd());
+	std::uniform_int_distribution<int> next(0, ATTACK_AMOUST - 1);
+
+	velocity = ZERO_VECTOR;
+	assaultCount = 0;			//突進回数をリセット
+	returnForce = ZERO_VECTOR;
+	position.y = 0.0f;
+	nextPosition.y = 0.0f;
+
+	if (prevType == SLOW_BULLET && shotCount <= 2.0f)
+	{
+		attackType = SLOW_BULLET;
+	}
+	else
+	{
+		shotCount = 0;				//発射回数をリセット
+		int nextAttack = next(eng);	//次の行動を指定
+		AttackType at = static_cast<AttackType>(nextAttack);	//列挙型に変換する
+		//次の行動がジャンプ蹴りだった場合上向きに力を加えておく
+		if (at == JUMPKICK)
+		{
+			returnForce.y = JUMP_DIRECTION_Y;
+		}
+
+		attackType = at;		//次の状態に移行する
+	}
 }
 
 /// <summary>

@@ -14,7 +14,7 @@ const float Player::DECREMENT_HIT_POINT = 5.0f;
 const float Player::COLLIDE_RADIUS = 50.0f;
 const float Player::NORMAL_SPEED = 3.0f;
 const float Player::DEFENSE_SPEED = 1.0f;
-const float Player::JUST_DEFENSE_TIME = 0.15f;
+const float Player::JUST_DEFENSE_TIME = 0.1f;
 const float Player::NORMAL_DEFENSE_TIME = 0.16f;
 const float Player::STOP_VELOCITY = 0.5f;
 const float Player::HIT_OTHER_CHARACTER_DIRECTION_Y = 1.5f;
@@ -23,6 +23,7 @@ const float Player::FRICTION_FORCE = 0.1f;
 const float Player::TRUNK_POINT = 100.0f;
 const float Player::DECREMENT_TRUNK_POINT = 10.0f;
 const float Player::INVINCIBLE_TIME = 5.0f;
+const float Player::DEFENCE_INTERVAL = 0.5f;
 
 /// <summary>
 /// コンストラクタ
@@ -30,6 +31,7 @@ const float Player::INVINCIBLE_TIME = 5.0f;
 Player::Player(BulletCreater* const inBulletCreater)
 	:Character(inBulletCreater)
 	,state()
+	,defenceInterval(0.0f)
 	,justDefenceTime()
 	,normalDefenceTime()
 	,isDefense()
@@ -102,6 +104,7 @@ void Player::Initialize()
 void Player::Update()
 {
 	invincibleTime += DeltaTime::GetInstace().GetDeltaTime();
+	defenceInterval -= DeltaTime::GetInstace().GetDeltaTime();
 	if (pUpdate != nullptr)
 	{
 		(this->*pUpdate)();			//状態ごとの更新処理
@@ -377,7 +380,6 @@ void Player::InputAction()
 	if (KeyManager::GetInstance().CheckPressed(KEY_INPUT_LSHIFT))
 	{
 		speed = DEFENSE_SPEED;
-		
 		isDefense = true;		//防御
 		CreateShield();
 

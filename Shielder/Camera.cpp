@@ -6,7 +6,7 @@
 
 #include "KeyManager.h"
 
-const VECTOR Camera::CAMERA_INITIAL_POSITION = VGet(2000.0f, 100.0f, -1000.0f);
+const VECTOR Camera::CAMERA_INITIAL_POSITION = VGet(2000.0f, 80.0f, -1000.0f);
 const float Camera::CAMERA_LOOK_AT_HEIGHT = 300.0f;
 const float Camera::CAMERA_LOOK_AT_DISTANCE = 10.0f;
 const float Camera::CAMERA_FOV = 60.0f;

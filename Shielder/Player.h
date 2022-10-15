@@ -56,9 +56,11 @@ private:
 	static const float TRUNK_POINT;							//体幹ゲージ
 	static const float DECREMENT_TRUNK_POINT;				//体幹ゲージ減少量
 	static const float INVINCIBLE_TIME;						//無敵時間
+	static const float DEFENCE_INTERVAL;					//次に防御できるまでの時間
 
 	State state;
 
+	float defenceInterval;			//盾を展開してからの経過時間
 	float justDefenceTime;			//ジャストガードと判断する時間
 	float normalDefenceTime;		//ノーマルガードと判断する時間
 	

@@ -55,6 +55,7 @@ private:
 	static const float COLLIDE_RADIUS;
 	static const float NORMAL_SPEED;
 	static const float DEFENSE_SPEED;
+	static const float KICK_SPEED;							//キック時スピード
 	static const float JUMP_DIRECTION_Y;					//ジャンプ時に上方向に加える力
 	static const float STOP_VELOCITY;
 	static const float FRICTION_FORCE;
@@ -99,6 +100,7 @@ private:
 
 	void CreateBullet();				//弾を生成する
 	void ShootBullet();					//弾を発射する
+	void SetNextAttack();				//次の行動を決定する
 	void CurrentPositionJudge();		//エネミーが画面の右左どちら側にいるか
 
 	void InputAction();
